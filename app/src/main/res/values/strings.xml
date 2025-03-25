@@ -3,4 +3,18 @@
     <string name="title_home">Trang chủ</string>
     <string name="title_dashboard">Mua hàng</string>
     <string name="title_notifications">Cá nhân</string>
+<!--    login-->
+    <string name="welcome_text">Welcome!</string>
+    <string name="to_crm_text">to <font color="#FF6347">Shopping Pay</font></string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="forgot_password">I forgot my password</string>
+    <string name="wanna_try_services">Wanna try our services?</string>
+    <string name="here_you_are">here you are</string>
+    <string name="app_logo">App Logo</string>
+<!--    signup-->
+    <string name="sign_up_user_title">Sign up for User</string>
+    <string name="sign_up_user">Sign Up</string>
+    <string name="already_have_user_account">I have user account</string>
 </resources>
