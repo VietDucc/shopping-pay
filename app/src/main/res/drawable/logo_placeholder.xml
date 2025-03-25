@@ -1,0 +1,52 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="120dp"
+    android:height="120dp"
+    android:viewportWidth="120"
+    android:viewportHeight="120">
+
+    <!-- Create a spiral-like shape with multiple arcs in different colors -->
+    <path
+        android:pathData="M60,60 m-25,0 a25,25 0 1,0 50,0 a25,25 0 1,0 -50,0"
+        android:strokeWidth="5"
+        android:strokeColor="#FF6347"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:trimPathStart="0"
+        android:trimPathEnd="0.25" />
+
+    <path
+        android:pathData="M60,60 m-25,0 a25,25 0 1,0 50,0 a25,25 0 1,0 -50,0"
+        android:strokeWidth="5"
+        android:strokeColor="#FAA460"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:trimPathStart="0.25"
+        android:trimPathEnd="0.5" />
+
+    <path
+        android:pathData="M60,60 m-25,0 a25,25 0 1,0 50,0 a25,25 0 1,0 -50,0"
+        android:strokeWidth="5"
+        android:strokeColor="#FF6347"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:trimPathStart="0.5"
+        android:trimPathEnd="0.75" />
+
+    <path
+        android:pathData="M60,60 m-25,0 a25,25 0 1,0 50,0 a25,25 0 1,0 -50,0"
+        android:strokeWidth="5"
+        android:strokeColor="#FAA460"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:trimPathStart="0.75"
+        android:trimPathEnd="1" />
+
+    <!-- Inner circle -->
+    <path
+        android:pathData="M60,60 m-15,0 a15,15 0 1,0 30,0 a15,15 0 1,0 -30,0"
+        android:strokeWidth="5"
+        android:strokeColor="#FAA460 "
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round" />
+</vector>
+
