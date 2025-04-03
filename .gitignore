@@ -13,3 +13,4 @@
 .externalNativeBuild
 .cxx
 local.properties
+caches/8.7/generated-gradle-jars/gradle-api-8.7.jar
