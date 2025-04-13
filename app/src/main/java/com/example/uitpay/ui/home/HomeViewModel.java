@@ -39,6 +39,19 @@ public class HomeViewModel extends ViewModel {
               mUserImage.setValue(null);
           });
     }
+    public void loadUserData() {
+        db.collection("user")
+                .document("id001")
+                .get()
+                .addOnSuccessListener(document -> {
+                    mName.setValue(document.getString("name"));
+                    mUserImage.setValue(document.getString("userimage"));
+                })
+                .addOnFailureListener(e -> {
+                    mName.setValue("Lỗi khi lấy dữ liệu");
+                    mUserImage.setValue(null);
+                });
+    }
 
     public LiveData<String> getText() {
         return mText;
