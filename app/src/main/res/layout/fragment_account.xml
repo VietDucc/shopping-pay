@@ -18,11 +18,12 @@
             android:id="@+id/profile_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@drawable/bg_rounded_corners"
+            android:backgroundTint="@color/purple_500"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@drawable/profile_bg">
+            app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
                 android:id="@+id/user_image"
@@ -41,6 +42,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
+                android:background="@color/purple_500"
                 android:orientation="vertical"
                 app:layout_constraintBottom_toBottomOf="@id/user_image"
                 app:layout_constraintStart_toEndOf="@id/user_image"
@@ -50,27 +52,132 @@
                     android:id="@+id/user_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp"
+                    android:textColor="@android:color/white"
+                    android:textSize="24sp"
                     android:textStyle="bold" />
-
                 <TextView
                     android:id="@+id/user_phone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0964-104-753"
-                    android:textColor="@android:color/black"
-                    android:textSize="14sp" />
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp" />
             </LinearLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/account_voucher"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_rounded_corners"
+        android:backgroundTint="@color/white"
+        android:elevation="12dp"
+        android:layout_marginTop="-30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        app:layout_constraintTop_toBottomOf="@id/profile_section"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:clickable="true"
+        android:focusable="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="16dp"
+            app:layout_constraintTop_toTopOf="parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="My Voucher"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_voucher"
+                    app:tint="@color/purple_500"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="0 Voucher"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/account_point"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_rounded_corners"
+        android:backgroundTint="@color/white"
+        android:elevation="12dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        app:layout_constraintTop_toBottomOf="@id/account_voucher"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:clickable="true"
+        android:focusable="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="16dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingRight="16dp"
+            app:layout_constraintTop_toTopOf="parent">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="The Point"
+                android:textSize="20sp"
+                android:textColor="@android:color/black"
+                android:textStyle="bold" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_point"
+                    app:tint="@color/purple_500"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="*****"
+                    android:textSize="18sp"
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
     <ScrollView
         android:id="@+id/content_scroll"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/profile_section"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/account_point"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
@@ -92,10 +199,10 @@
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@drawable/ic_invoice"
-                    app:tint="@color/red" />
+                    app:tint="@color/purple_500" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -103,12 +210,13 @@
                     android:layout_weight="1"
                     android:layout_marginStart="16dp"
                     android:text="Hóa đơn"
-                    android:textSize="16sp"
+                    android:textSize="20sp"
                     android:textColor="@android:color/black" />
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:alpha="0.4"
                     android:src="@drawable/ic_arrow_right" />
             </LinearLayout>
 
@@ -125,10 +233,10 @@
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@drawable/ic_phone_call"
-                    app:tint="@color/red" />
+                    app:tint="@color/purple_500" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -136,12 +244,13 @@
                     android:layout_weight="1"
                     android:layout_marginStart="16dp"
                     android:text="Gọi tổng đài"
-                    android:textSize="16sp"
+                    android:textSize="20sp"
                     android:textColor="@android:color/black" />
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:alpha="0.4"
                     android:src="@drawable/ic_arrow_right" />
             </LinearLayout>
 
@@ -158,10 +267,10 @@
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@drawable/ic_terms"
-                    app:tint="@color/red" />
+                    app:tint="@color/purple_500" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -169,12 +278,13 @@
                     android:layout_weight="1"
                     android:layout_marginStart="16dp"
                     android:text="Điều khoản và điều kiện"
-                    android:textSize="16sp"
+                    android:textSize="20sp"
                     android:textColor="@android:color/black" />
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:alpha="0.4"
                     android:src="@drawable/ic_arrow_right" />
             </LinearLayout>
 
@@ -191,10 +301,10 @@
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:src="@drawable/ic_language"
-                    app:tint="@color/red" />
+                    app:tint="@color/purple_500" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -202,14 +312,38 @@
                     android:layout_weight="1"
                     android:layout_marginStart="16dp"
                     android:text="Ngôn ngữ"
-                    android:textSize="16sp"
+                    android:textSize="20dp"
                     android:textColor="@android:color/black" />
 
                 <ImageView
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:alpha="0.4"
                     android:src="@drawable/ic_arrow_right" />
             </LinearLayout>
+            <TextView
+                android:id="@+id/contact_us"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Liên hệ với chúng tôi: 0898856496"
+                android:textColor="@color/purple_500"
+                android:gravity="center"
+                android:layout_marginTop="20dp"
+                android:textSize="18sp"
+                android:padding="8dp" />
+            <Button
+                android:id="@+id/logout_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Đăng xuất"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/purple_500"
+                android:layout_marginLeft="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="16dp"/>
         </LinearLayout>
+
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

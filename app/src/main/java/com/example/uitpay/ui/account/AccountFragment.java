@@ -4,9 +4,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ImageView;
 import android.util.Log;
+import android.content.Intent;
+import android.net.Uri;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -16,6 +20,9 @@ import com.bumptech.glide.Glide;
 import com.example.uitpay.R;
 import com.example.uitpay.databinding.FragmentAccountBinding;
 import com.example.uitpay.ui.home.HomeViewModel;
+import com.example.uitpay.ui.login.LoginActivity;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 public class AccountFragment extends Fragment {
     private FragmentAccountBinding binding;
@@ -30,6 +37,8 @@ public class AccountFragment extends Fragment {
         View root = binding.getRoot();
 
         observeUserData();
+        callHotline();
+        logoutUserAccount();
 
         return root;
     }
@@ -52,6 +61,28 @@ public class AccountFragment extends Fragment {
             } else {
                 userImageView.setImageResource(R.drawable.avatar_test);
             }
+        });
+    }
+    private void callHotline() {
+        LinearLayout hotlineView = binding.itemHotline;
+        hotlineView.setOnClickListener(v -> {
+            //Chuyển sang App call
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:0898856496"));
+            startActivity(intent);
+        });
+    }
+
+    private void logoutUserAccount() {
+        Button logoutButton = binding.logoutButton;
+        logoutButton.setOnClickListener(v -> {
+            //Logout khỏi Firebase
+            FirebaseAuth.getInstance().signOut();
+
+            //Chuyển về màn hình Login
+            Intent intent = new Intent(requireContext(), LoginActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
         });
     }
 
