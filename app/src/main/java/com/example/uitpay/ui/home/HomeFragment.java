@@ -1,5 +1,6 @@
 package com.example.uitpay.ui.home;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.example.uitpay.R;
 import com.example.uitpay.databinding.FragmentHomeBinding;
+import com.example.uitpay.ui.cart.CartActivity;
 
 public class HomeFragment extends Fragment {
 
@@ -42,6 +44,15 @@ public class HomeFragment extends Fragment {
                      .centerCrop()
                      .into(userImageView);
             }
+        });
+
+        binding.topAppBar.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == R.id.shopping_cart) {
+                Intent intent = new Intent(requireContext(), CartActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            return false;
         });
 
         return root;

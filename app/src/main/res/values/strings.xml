@@ -17,4 +17,11 @@
     <string name="sign_up_user_title">Sign up for User</string>
     <string name="sign_up_user">Sign Up</string>
     <string name="already_have_user_account">I have user account</string>
+<!-- shopping cart-->
+    <string name="title_cart">Giỏ hàng</string>
+    <string name="title_add_item">Thêm sản phẩm</string>
+    <string name="title_empty">Chưa có sản phẩm</string>
+    <string name="title_checkout">Đặt hàng</string>
+    <string name="title_total_label">Tổng tiền</string>
+    <string name="title_total_cost">0đ</string>
 </resources>
