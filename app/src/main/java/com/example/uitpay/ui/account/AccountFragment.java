@@ -21,6 +21,7 @@ import com.example.uitpay.R;
 import com.example.uitpay.databinding.FragmentAccountBinding;
 import com.example.uitpay.ui.home.HomeViewModel;
 import com.example.uitpay.ui.login.LoginActivity;
+import com.example.uitpay.invoice.InvoiceActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 
@@ -39,6 +40,7 @@ public class AccountFragment extends Fragment {
         observeUserData();
         callHotline();
         logoutUserAccount();
+        issueInvoice();
 
         return root;
     }
@@ -82,6 +84,14 @@ public class AccountFragment extends Fragment {
             //Chuyển về màn hình Login
             Intent intent = new Intent(requireContext(), LoginActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+        });
+    }
+
+    private void issueInvoice(){
+        LinearLayout invoiceView = binding.itemInvoice;
+        invoiceView.setOnClickListener(v -> {
+            Intent intent = new Intent(getActivity(), InvoiceActivity.class);
             startActivity(intent);
         });
     }

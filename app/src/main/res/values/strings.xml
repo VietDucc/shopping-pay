@@ -26,4 +26,18 @@
     <string name="title_total_cost">0đ</string>
     <string name="title_account">Tài khoản</string>
 
+
+    <string name="billing">Billing</string>
+    <string name="back">Back</string>
+    <string name="overview">Overview</string>
+    <string name="quotation">Quotation</string>
+    <string name="invoice">Invoice</string>
+    <string name="more_options">More options</string>
+    <string name="expand">Expand</string>
+    <string name="invoice_number">Mã hóa đơn</string>
+    <string name="created_at">Ngày xuất hóa đơn</string>
+    <string name="product">Sản phẩm</string>
+    <string name="quantity">Số lượng</string>
+
+
 </resources>
