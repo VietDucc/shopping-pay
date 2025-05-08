@@ -1,4 +1,4 @@
-package com.example.uitpay.invoice;
+package com.example.uitpay.ui.invoice;
 
 import android.os.Bundle;
 import android.widget.ImageButton;

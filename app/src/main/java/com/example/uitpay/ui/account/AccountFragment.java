@@ -21,7 +21,7 @@ import com.example.uitpay.R;
 import com.example.uitpay.databinding.FragmentAccountBinding;
 import com.example.uitpay.ui.home.HomeViewModel;
 import com.example.uitpay.ui.login.LoginActivity;
-import com.example.uitpay.invoice.InvoiceActivity;
+import com.example.uitpay.ui.invoice.InvoiceActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
 

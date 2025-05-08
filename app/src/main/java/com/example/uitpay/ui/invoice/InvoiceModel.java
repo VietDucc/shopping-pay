@@ -1,8 +1,7 @@
-package com.example.uitpay.invoice;
+package com.example.uitpay.ui.invoice;
 
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
