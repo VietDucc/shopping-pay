@@ -15,10 +15,12 @@ import com.example.uitpay.R;
 import com.google.firebase.Timestamp;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Map;
 
 public class InvoiceActivity extends AppCompatActivity {
 
@@ -89,16 +91,14 @@ public class InvoiceActivity extends AppCompatActivity {
             TextView invoiceIdTextView;
             TextView dateTextView;
             TextView costTextView;
-            TextView productTextView;
-            TextView quantityTextView;
+            RecyclerView productRecyclerView;
 
             public InvoiceViewHolder(View itemView) {
                 super(itemView);
                 invoiceIdTextView = itemView.findViewById(R.id.invoiceNumberText);
                 dateTextView = itemView.findViewById(R.id.createdAtText);
                 costTextView = itemView.findViewById(R.id.costText);
-                productTextView = itemView.findViewById(R.id.productText);
-                quantityTextView = itemView.findViewById(R.id.quantityText);
+                productRecyclerView = itemView.findViewById(R.id.productRecyclerView);
             }
         }
 
@@ -114,8 +114,58 @@ public class InvoiceActivity extends AppCompatActivity {
             holder.invoiceIdTextView.setText(invoice.getInvoiceID());
             holder.dateTextView.setText(getFormattedDate(invoice.getDate()));
             holder.costTextView.setText(invoice.getCost());
-            holder.productTextView.setText(invoice.getProduct());
-            holder.quantityTextView.setText(invoice.getQuantity());
+            List<Map<String, Object>> productList = new ArrayList<>();
+            for (String productKey : invoice.getProductKeys()) {
+                Map<String, Object> product = new HashMap<>();
+                product.put("name", invoice.getProductName(productKey));
+                product.put("price", invoice.getProductPrice(productKey));
+                product.put("quantity", invoice.getProductQuantity(productKey));
+                productList.add(product);
+            }
+            ProductAdapter productAdapter = new ProductAdapter(productList);
+            holder.productRecyclerView.setLayoutManager(new LinearLayoutManager(holder.itemView.getContext()));
+            holder.productRecyclerView.setAdapter(productAdapter);
+        }
+        // Adapter cho sản phẩm
+        public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductViewHolder> {
+
+            private List<Map<String, Object>> productList;
+
+            public ProductAdapter(List<Map<String, Object>> productList) {
+                this.productList = productList;
+            }
+
+            @Override
+            public int getItemCount() {
+                return productList.size();
+            }
+
+            public class ProductViewHolder extends RecyclerView.ViewHolder {
+                TextView productNameTextView;
+                TextView productPriceTextView;
+                TextView productQuantityTextView;
+
+                public ProductViewHolder(View itemView) {
+                    super(itemView);
+                    productNameTextView = itemView.findViewById(R.id.productName);
+                    productPriceTextView = itemView.findViewById(R.id.productPrice);
+                    productQuantityTextView = itemView.findViewById(R.id.productQuantity);
+                }
+            }
+
+            @Override
+            public ProductViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+                View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.product_item, parent, false);
+                return new ProductViewHolder(view);
+            }
+
+            @Override
+            public void onBindViewHolder(ProductViewHolder holder, int position) {
+                Map<String, Object> product = productList.get(position);
+                holder.productNameTextView.setText((String) product.get("name"));
+                holder.productPriceTextView.setText((String) product.get("price"));
+                holder.productQuantityTextView.setText((String) product.get("quantity"));
+            }
         }
     }
 }

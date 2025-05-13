@@ -95,6 +95,9 @@ public class AccountFragment extends Fragment {
             startActivity(intent);
         });
     }
+    private void readTermsConditions(){
+        
+    }
 
     @Override
     public void onDestroyView() {

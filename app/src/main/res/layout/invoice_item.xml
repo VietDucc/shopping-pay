@@ -86,29 +86,6 @@
             tools:text="INV0938-09-001" />
 
         <TextView
-            android:id="@+id/quantityLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/quantity"
-            android:textAllCaps="true"
-            android:textColor="@color/purple_500"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/invoiceNumberText" />
-
-        <TextView
-            android:id="@+id/quantityText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/quantityLabel"
-            tools:text="0" />
-
-        <TextView
             android:id="@+id/createdAtLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -118,7 +95,7 @@
             android:textColor="@color/purple_500"
             android:textSize="12sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/quantityText" />
+            app:layout_constraintTop_toBottomOf="@id/invoiceNumberText" />
 
         <TextView
             android:id="@+id/createdAtText"
@@ -143,16 +120,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/createdAtText" />
 
-        <TextView
-            android:id="@+id/productText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:textColor="@color/black"
-            android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/productRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
             app:layout_constraintTop_toBottomOf="@id/productLabel"
-            tools:text="Sách" />
+            tools:listitem="@layout/product_item"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -6,24 +6,24 @@ import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 public class InvoiceModel {
     private Long cost;
     private Timestamp date;
     private String invoiceId;
-    private String product;
-    private Number quantity;
+    private Map<String, Map<String, Object>> product;
+
     private FirebaseFirestore db;
 
     public InvoiceModel() {
         db = FirebaseFirestore.getInstance();
     }
 
-    public InvoiceModel(Long cost, Timestamp date, String invoiceId, String product, Number quantity) {
+    public InvoiceModel(Long cost, Timestamp date, String invoiceId, Map<String, Map<String, Object>> product) {
         this.cost = cost;
         this.date = date;
         this.invoiceId = invoiceId;
         this.product = product;
-        this.quantity = quantity;
     }
 
     public String getCost() {
@@ -35,12 +35,27 @@ public class InvoiceModel {
     public Timestamp getDate() {
         return date;
     }
-    public String getProduct() {
+    public Map<String, Map<String, Object>> getProduct() {
         return product;
     }
-    public String getQuantity() {
-        return quantity + "";
+
+    public List<String> getProductKeys() {
+        return new ArrayList<>(product.keySet());
     }
+    public String getProductName(String productKey) {
+        Map<String, Object> productDetails = product.get(productKey);
+        return (String) productDetails.get("name");
+    }
+    public String getProductPrice(String productKey) {
+        Map<String, Object> productDetails = product.get(productKey);
+        return ": " + productDetails.get("price") + " đ";
+    }
+
+    public String getProductQuantity(String productKey) {
+        Map<String, Object> productDetails = product.get(productKey);
+        return "x"+ productDetails.get("quantity");
+    }
+
 
     public void loadInvoiceData(String userId, final InvoiceDataCallback callback){
         db.collection("invoice")
@@ -53,12 +68,10 @@ public class InvoiceModel {
                             // Lấy dữ liệu từ mỗi hóa đơn và tạo đối tượng InvoiceModel
                             Long cost = documentSnapshot.getLong("cost");
                             Timestamp date = documentSnapshot.getTimestamp("date");
-                            String invoiceId = documentSnapshot.getString("invoiceId");
-                            String product = documentSnapshot.getString("product");
-                            Number quantity = documentSnapshot.getDouble("quantity");
-
+                            String invoiceId = documentSnapshot.getString("invoiceID");
+                            Map<String, Map<String, Object>> product = (Map<String, Map<String, Object>>) documentSnapshot.get("product");
                             // Tạo đối tượng InvoiceModel và thêm vào danh sách
-                            invoices.add(new InvoiceModel(cost, date, invoiceId, product, quantity));
+                            invoices.add(new InvoiceModel(cost, date, invoiceId, product));
                         }
                     }
                     callback.onSuccess(invoices);
