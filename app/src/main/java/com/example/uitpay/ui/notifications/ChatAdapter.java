@@ -64,6 +64,11 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         notifyItemInserted(messageList.size() - 1);
     }
 
+    public void updateMessages(List<ChatMessage> newMessages) {
+        this.messageList = newMessages;
+        notifyDataSetChanged();
+    }
+
     static class UserMessageViewHolder extends RecyclerView.ViewHolder {
         CardView cardView;
         TextView messageText;

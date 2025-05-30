@@ -14,3 +14,12 @@
 .cxx
 local.properties
 caches/8.7/generated-gradle-jars/gradle-api-8.7.jar
+
+# Thêm các dòng ignore cho Gradle cache và file không cần thiết
+caches/
+daemon/
+native/
+wrapper/
+.tmp/
+jdks/
+android.lock
