@@ -7,14 +7,21 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class OpenAIClient {
-    // TODO: Thay API key này bằng API key hợp lệ từ OpenAI (https://platform.openai.com/)
-    // API key hiện tại là của Together.ai, không phải OpenAI
-    private static final String API_KEY = "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";
+    // TODO: Thêm API key vào gradle.properties hoặc biến môi trường
+    // Để bảo mật, không hard-code API key trong source code
+    // private static final String API_KEY = "YOUR_OPENAI_API_KEY_HERE";
+    private static final String API_KEY = getApiKey();
     // URL API của OpenAI
     private static final String BASE_URL = "https://api.openai.com/";
     
     private static OpenAIClient instance;
     private final OpenAIService openAIService;
+    
+    private static String getApiKey() {
+        // TODO: Lấy API key từ BuildConfig hoặc SharedPreferences
+        // Hiện tại trả về placeholder để tránh lỗi bảo mật
+        return "your-openai-api-key-here";
+    }
     
     private OpenAIClient() {
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor();
