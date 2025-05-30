@@ -1,67 +1,200 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.home.HomeFragment">
+    android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/user_image"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="centerCrop"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+    <!-- Banner Section with User Info -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/text_name"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:singleLine="true"
-        android:ellipsize="end"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/user_image"
-        app:layout_constraintTop_toTopOf="@id/user_image" />
+        <!-- Banner Slider -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPagerBanner"
+            android:layout_width="match_parent"
+            android:layout_height="180dp" />
 
-    <TextView
-        android:id="@+id/text_home"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/user_image"
-        app:layout_constraintTop_toBottomOf="@id/text_name" />
+        <!-- User Info Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
+            android:layout_marginTop="140dp"
+            android:orientation="horizontal">
 
-    <ImageView
-        android:id="@+id/banner1"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/banner1"
-        app:layout_constraintTop_toBottomOf="@id/user_image"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+            <!-- Left Section: Avatar + Username -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="0dp"
+                android:layout_height="60dp"
+                android:layout_weight="1"
+                android:layout_marginEnd="8dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
 
-    <ImageView
-        android:id="@+id/banner2"
-        android:layout_width="0dp"
-        android:layout_height="200dp"
-        android:layout_marginTop="16dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/banner2"
-        app:layout_constraintTop_toBottomOf="@id/banner1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:padding="8dp"
+                    android:gravity="center_vertical"
+                    android:background="@android:color/white">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                    <!-- User Avatar -->
+                    <androidx.cardview.widget.CardView
+                        android:layout_width="44dp"
+                        android:layout_height="44dp"
+                        app:cardCornerRadius="10dp"
+                        app:cardElevation="0dp">
+                        
+                        <ImageView
+                            android:id="@+id/userImage"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:scaleType="centerCrop"/>
+                    </androidx.cardview.widget.CardView>
+
+                    <!-- User Name -->
+                    <TextView
+                        android:id="@+id/textName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="12dp"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- Right Section: Balance -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="60dp"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="4dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:paddingHorizontal="16dp"
+                    android:background="@android:color/white">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Số dư"
+                        android:textSize="12sp"
+                        android:textColor="#666666"/>
+
+                    <TextView
+                        android:id="@+id/textHome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@android:color/holo_red_dark"
+                        android:textSize="14sp"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+    </FrameLayout>
+
+    <!-- Posts Section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginTop="24dp">
+
+        <!-- Posts Title with Filter -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Bài viết mới"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FF7F50"/>
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/filterButton"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="0dp"
+                android:alpha="0.7"
+                app:cardBackgroundColor="#F5F5F5">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:paddingHorizontal="12dp">
+
+                    <TextView
+                        android:id="@+id/filterText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Trong tuần"
+                        android:textSize="12sp"
+                        android:textColor="#666666"/>
+
+                    <ImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:layout_marginStart="4dp"
+                        android:src="@android:drawable/arrow_down_float"
+                        android:alpha="0.5"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+        </LinearLayout>
+
+        <!-- Posts Horizontal Scroll -->
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewPagerPosts"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp"
+            android:clipToPadding="false"/>
+
+        <!-- Current Stores Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Cửa hàng hiện tại"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#FF7F50"
+                android:paddingHorizontal="16dp"
+                android:paddingVertical="8dp"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewStores"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:paddingHorizontal="16dp"
+                android:clipToPadding="false"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

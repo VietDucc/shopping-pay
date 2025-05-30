@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.UITPAY" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.UITPAY" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/purple_500</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -10,8 +10,14 @@
         <item name="colorSecondaryVariant">@color/teal_700</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
-        <!-- Customize your theme here. -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <!-- Remove default window padding -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:fitsSystemWindows">false</item>
     </style>
     <!-- Theme cho LoginActivity -->
     <style name="Theme.LoginModule" parent="Theme.MaterialComponents.Light.NoActionBar">
@@ -32,7 +38,7 @@
     </style>
 
     <!-- Base Theme cho Home_Mobile -->
-    <style name="Base.Theme.Home_Mobile" parent="Theme.Material3.DayNight.NoActionBar">
+    <style name="Base.Theme.Home_Mobile" parent="Theme.Material3.Light.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/primary_red</item>
         <item name="colorPrimaryVariant">@color/primary_red_dark</item>
@@ -42,10 +48,16 @@
         <item name="colorSecondaryVariant">@color/accent_color</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
-        <item name="android:statusBarColor">@color/primary_red</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
         <!-- Navigation bar color -->
         <item name="android:navigationBarColor">@color/white</item>
         <!-- Light status bar -->
-        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <!-- Remove default window padding -->
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowActionBar">false</item>
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:fitsSystemWindows">false</item>
     </style>
 </resources>

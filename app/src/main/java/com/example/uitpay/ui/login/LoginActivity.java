@@ -57,12 +57,17 @@ public class LoginActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             // Login successful
                             Toast.makeText(LoginActivity.this, "Login successful!!", Toast.LENGTH_LONG).show();
-                            // Chuyển sang MainActivity
-                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                            
+                            // Chuyển sang MainActivity với flags mới
+                            Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                            startActivity(intent);
                             finish();
                         } else {
                             // Login failed
-                            Toast.makeText(LoginActivity.this, "Login failed!!", Toast.LENGTH_LONG).show();
+                            Toast.makeText(LoginActivity.this, 
+                                "Login failed: " + task.getException().getMessage(), 
+                                Toast.LENGTH_LONG).show();
                         }
                     }
                 });
