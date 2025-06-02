@@ -2,7 +2,7 @@
     <string name="app_name">UITPAY</string>
     <string name="title_home">Trang chủ</string>
     <string name="title_dashboard">Mua hàng</string>
-    <string name="title_notifications">Cá nhân</string>
+    <string name="title_notifications">Chatbot</string>
 <!--    login-->
     <string name="welcome_text">Welcome!</string>
     <string name="to_crm_text">to <font color="#FF6347">Shopping Pay</font></string>

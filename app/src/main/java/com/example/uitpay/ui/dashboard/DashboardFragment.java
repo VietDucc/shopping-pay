@@ -59,11 +59,11 @@ public class DashboardFragment extends Fragment {
     private String[][] techListsArray;
     private final MutableLiveData<Integer> totalQuantity = new MutableLiveData<>(0);
     private final MutableLiveData<Double> totalPrice = new MutableLiveData<>(0.0);
+    private DashboardViewModel dashboardViewModel;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                         ViewGroup container, Bundle savedInstanceState) {
-        DashboardViewModel dashboardViewModel =
-                new ViewModelProvider(this).get(DashboardViewModel.class);
+                             ViewGroup container, Bundle savedInstanceState) {
+        dashboardViewModel = new ViewModelProvider(this).get(DashboardViewModel.class);
 
         binding = FragmentDashboardBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -72,42 +72,42 @@ public class DashboardFragment extends Fragment {
         testButton = binding.testButton;
         final ImageView muahangImage = binding.muahangImage;
         stageImage = binding.stageImage;
-        
+
         // Khởi tạo NFC Adapter
         nfcAdapter = NfcAdapter.getDefaultAdapter(requireContext());
 
         // Observe tất cả các LiveData
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         dashboardViewModel.getButtonText().observe(getViewLifecycleOwner(), testButton::setText);
-        dashboardViewModel.getStageImageResource().observe(getViewLifecycleOwner(), 
-            resource -> stageImage.setImageResource(resource));
-        dashboardViewModel.getMuahangImageResource().observe(getViewLifecycleOwner(), 
-            resource -> muahangImage.setImageResource(resource));
+        dashboardViewModel.getStageImageResource().observe(getViewLifecycleOwner(),
+                resource -> stageImage.setImageResource(resource));
+        dashboardViewModel.getMuahangImageResource().observe(getViewLifecycleOwner(),
+                resource -> muahangImage.setImageResource(resource));
         dashboardViewModel.getMuahangImageVisibility().observe(getViewLifecycleOwner(),
-            visibility -> binding.muahangImage.setVisibility(visibility));
+                visibility -> binding.muahangImage.setVisibility(visibility));
         dashboardViewModel.getSummaryLayoutVisibility().observe(getViewLifecycleOwner(),
-            visibility -> binding.summaryLayout.setVisibility(visibility));
+                visibility -> binding.summaryLayout.setVisibility(visibility));
         dashboardViewModel.getRecyclerViewVisibility().observe(getViewLifecycleOwner(),
-            visibility -> binding.productsRecyclerView.setVisibility(visibility));
+                visibility -> binding.productsRecyclerView.setVisibility(visibility));
 
-        dashboardViewModel.getTotalQuantity().observe(getViewLifecycleOwner(), quantity -> 
-            binding.productCountText.setText("Số lượng sản phẩm: " + quantity));
+        dashboardViewModel.getTotalQuantity().observe(getViewLifecycleOwner(), quantity ->
+                binding.productCountText.setText("Số lượng sản phẩm: " + quantity));
 
-        dashboardViewModel.getTotalPrice().observe(getViewLifecycleOwner(), price -> 
-            binding.totalPriceText.setText(String.format("Tổng tiền: %.0f VND", price)));
+        dashboardViewModel.getTotalPrice().observe(getViewLifecycleOwner(), price ->
+                binding.totalPriceText.setText(String.format("Tổng tiền: %.0f VND", price)));
 
         dashboardViewModel.getRecheckStatusText().observe(getViewLifecycleOwner(),
-            text -> binding.textDashboard.setText(text));
+                text -> binding.textDashboard.setText(text));
 
         dashboardViewModel.getPaymentInfoText().observe(getViewLifecycleOwner(),
-            text -> {
-                if (text != null) {
-                    binding.textDashboard.setText(Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT));
-                    binding.textDashboard.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
-                    binding.textDashboard.setGravity(Gravity.CENTER);
-                    binding.textDashboard.setPadding(16, 32, 16, 32);
-                }
-            });
+                text -> {
+                    if (text != null) {
+                        binding.textDashboard.setText(Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT));
+                        binding.textDashboard.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
+                        binding.textDashboard.setGravity(Gravity.CENTER);
+                        binding.textDashboard.setPadding(16, 32, 16, 32);
+                    }
+                });
 
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,9 +116,9 @@ public class DashboardFragment extends Fragment {
                 if (stage != null) {
                     if (stage == 1) {
                         if (nfcAdapter == null) {
-                            Toast.makeText(requireContext(), 
-                                "Thiết bị của bạn không hỗ trợ NFC", 
-                                Toast.LENGTH_LONG).show();
+                            Toast.makeText(requireContext(),
+                                    "Thiết bị của bạn không hỗ trợ NFC",
+                                    Toast.LENGTH_LONG).show();
                             return;
                         }
                         if (!nfcAdapter.isEnabled()) {
@@ -134,8 +134,8 @@ public class DashboardFragment extends Fragment {
                         Boolean isChecked = dashboardViewModel.getIsChecked().getValue();
                         if (isChecked != null && !isChecked) {
                             Toast.makeText(requireContext(),
-                                "Đơn hàng vẫn chưa được Recheck",
-                                Toast.LENGTH_SHORT).show();
+                                    "Đơn hàng vẫn chưa được Recheck",
+                                    Toast.LENGTH_SHORT).show();
                         } else {
                             String buttonText = dashboardViewModel.getButtonText().getValue();
                             if (buttonText.equals("Hoàn thành recheck")) {
@@ -148,15 +148,7 @@ public class DashboardFragment extends Fragment {
                                     if (task.isSuccessful()) {
                                         Double totalPrice = task.getResult().getValue(Double.class);
                                         if (totalPrice != null) {
-                                            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-                                            builder.setMessage(String.format("Bạn có xác nhận thanh toán số tiền %,.0f VND?", totalPrice))
-                                                   .setPositiveButton("Đồng ý", (dialog, id) -> {
-                                                       dashboardViewModel.processPayment(requireContext(), dialog);
-                                                   })
-                                                   .setNegativeButton("Từ chối", (dialog, id) -> {
-                                                       dialog.dismiss();
-                                                   });
-                                            builder.create().show();
+                                            showPaymentMethodDialog(totalPrice);
                                         }
                                     }
                                 });
@@ -180,8 +172,8 @@ public class DashboardFragment extends Fragment {
 
         // Lắng nghe thay đổi từ Realtime Database
         DatabaseReference productsRef = FirebaseDatabase.getInstance().getReference()
-            .child("phampho1103")
-            .child("products");
+                .child("phampho1103")
+                .child("products");
 
         productsRef.addValueEventListener(new ValueEventListener() {
             @Override
@@ -195,7 +187,7 @@ public class DashboardFragment extends Fragment {
                     product.setProductImage(productSnapshot.child("productImage").getValue(String.class));
                     product.setOrigin(productSnapshot.child("origin").getValue(String.class));
                     product.setDescription(productSnapshot.child("description").getValue(String.class));
-                    
+
                     productAdapter.addOrUpdateProduct(product);
                 }
             }
@@ -210,12 +202,12 @@ public class DashboardFragment extends Fragment {
     }
 
     private void showNFCSettings() {
-        Toast.makeText(requireContext(), 
-            "Vui lòng bật NFC để tiếp tục", 
-            Toast.LENGTH_LONG).show();
+        Toast.makeText(requireContext(),
+                "Vui lòng bật NFC để tiếp tục",
+                Toast.LENGTH_LONG).show();
         startActivityForResult(
-            new Intent(Settings.ACTION_NFC_SETTINGS),
-            ENABLE_NFC_REQUEST_CODE);
+                new Intent(Settings.ACTION_NFC_SETTINGS),
+                ENABLE_NFC_REQUEST_CODE);
     }
 
     @Override
@@ -223,14 +215,14 @@ public class DashboardFragment extends Fragment {
         if (requestCode == ENABLE_NFC_REQUEST_CODE) {
             if (nfcAdapter.isEnabled()) {
                 binding.textDashboard.setText(
-                    "Hãy quét điện thoại tới các sản phẩm mà bạn muốn mua");
+                        "Hãy quét điện thoại tới các sản phẩm mà bạn muốn mua");
                 binding.muahangImage.setImageResource(R.drawable.muahang2);
                 binding.stageImage.setImageResource(R.drawable.stage2);
                 testButton.setText("Hoàn thành mua hàng");
             } else {
-                Toast.makeText(requireContext(), 
-                    "Cần bật NFC để sử dụng tính năng này", 
-                    Toast.LENGTH_LONG).show();
+                Toast.makeText(requireContext(),
+                        "Cần bật NFC để sử dụng tính năng này",
+                        Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -246,23 +238,23 @@ public class DashboardFragment extends Fragment {
         super.onResume();
         if (nfcAdapter != null) {
             Intent intent = new Intent(requireContext(), requireActivity().getClass())
-                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-            
-            pendingIntent = PendingIntent.getActivity(requireContext(), 0, 
-                intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
-                
+                    .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+            pendingIntent = PendingIntent.getActivity(requireContext(), 0,
+                    intent, PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE);
+
             IntentFilter ndef = new IntentFilter(NfcAdapter.ACTION_NDEF_DISCOVERED);
             try {
                 ndef.addDataType("*/*");
             } catch (IntentFilter.MalformedMimeTypeException e) {
                 throw new RuntimeException("MimeType không hợp lệ", e);
             }
-            
+
             intentFiltersArray = new IntentFilter[]{ndef};
             techListsArray = new String[][]{new String[]{Ndef.class.getName()}};
-            
-            nfcAdapter.enableForegroundDispatch(requireActivity(), 
-                pendingIntent, intentFiltersArray, techListsArray);
+
+            nfcAdapter.enableForegroundDispatch(requireActivity(),
+                    pendingIntent, intentFiltersArray, techListsArray);
         }
     }
 
@@ -272,5 +264,44 @@ public class DashboardFragment extends Fragment {
         if (nfcAdapter != null) {
             nfcAdapter.disableForegroundDispatch(requireActivity());
         }
+    }
+
+    private void showPaymentMethodDialog(Double totalPrice) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        LayoutInflater inflater = requireActivity().getLayoutInflater();
+        View dialogView = inflater.inflate(R.layout.dialog_payment_method, null);
+        builder.setView(dialogView);
+
+        AlertDialog dialog = builder.create();
+        dialog.setTitle("Chọn phương thức thanh toán");
+
+        // Lấy reference đến các view trong dialog
+        View vnpayOption = dialogView.findViewById(R.id.layout_vnpay);
+        View uitpayOption = dialogView.findViewById(R.id.layout_uitpay);
+
+        vnpayOption.setOnClickListener(v -> {
+            dialog.dismiss();
+            showPaymentConfirmDialog(totalPrice, "VNPAY");
+        });
+
+        uitpayOption.setOnClickListener(v -> {
+            dialog.dismiss();
+            showPaymentConfirmDialog(totalPrice, "UITPAY");
+        });
+
+        dialog.show();
+    }
+
+    private void showPaymentConfirmDialog(Double totalPrice, String paymentMethod) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Xác nhận thanh toán qua " + paymentMethod)
+                .setMessage(String.format("Bạn có xác nhận thanh toán số tiền %,.0f VND?", totalPrice))
+                .setPositiveButton("Đồng ý", (dialog, id) -> {
+                    dashboardViewModel.processPayment(requireContext(), dialog);
+                })
+                .setNegativeButton("Từ chối", (dialog, id) -> {
+                    dialog.dismiss();
+                });
+        builder.create().show();
     }
 }
