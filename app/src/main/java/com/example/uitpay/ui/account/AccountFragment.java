@@ -32,7 +32,6 @@ public class AccountFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState){
 
         homeViewModel = new ViewModelProvider(this).get(HomeViewModel.class);
-        homeViewModel.loadUserData();
 
         binding = FragmentAccountBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
@@ -57,7 +56,7 @@ public class AccountFragment extends Fragment {
                 Glide.with(requireContext())
                         .load(imageUrl)
                         .centerCrop()
-                        .override(100, 100) // 👌 ảnh nhỏ, tránh lag
+                        .override(100, 100) // ảnh nhỏ, tránh lag
                         .error(R.drawable.avatar_test) // fallback nếu ảnh lỗi
                         .into(userImageView);
             } else {

@@ -25,8 +25,7 @@
     <string name="title_total_label">Tổng tiền</string>
     <string name="title_total_cost">0đ</string>
     <string name="title_account">Tài khoản</string>
-
-
+<!-- invoices-->
     <string name="billing">Billing</string>
     <string name="back">Back</string>
     <string name="overview">Overview</string>
@@ -38,6 +37,5 @@
     <string name="created_at">Ngày xuất hóa đơn</string>
     <string name="product">Sản phẩm</string>
     <string name="quantity">Số lượng</string>
-
 
 </resources>
