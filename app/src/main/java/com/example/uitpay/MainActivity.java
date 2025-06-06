@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        setTheme(R.style.Theme_UITPAY); // Đặt theme trước khi gọi super.onCreate()
         super.onCreate(savedInstanceState);
 
         // Khởi tạo Firebase trước
