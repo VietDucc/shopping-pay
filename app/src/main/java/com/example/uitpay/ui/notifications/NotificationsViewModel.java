@@ -37,10 +37,7 @@ public class NotificationsViewModel extends AndroidViewModel {
         // Khởi tạo ProductCsvReader
         productCsvReader = new ProductCsvReader(application.getApplicationContext());
         
-        // Thêm tin nhắn chào mừng
-        List<ChatMessage> initialMessages = new ArrayList<>();
-        initialMessages.add(new ChatMessage("Xin chào! Tôi là ChatBot. Tôi có thể giúp bạn tìm thông tin về sản phẩm trong cửa hàng. Hãy hỏi tôi về vị trí của sản phẩm bạn cần tìm.", ChatMessage.TYPE_BOT));
-        messageList.setValue(initialMessages);
+        // Không thêm tin nhắn chào mừng ban đầu vì đã có suggested questions
     }
 
     public LiveData<List<ChatMessage>> getMessageList() {
@@ -80,10 +77,19 @@ public class NotificationsViewModel extends AndroidViewModel {
         String productInfo = productCsvReader.getProductsAsString();
         
         // Chuẩn bị system prompt với thông tin sản phẩm
-        String systemPrompt = "Bạn là trợ lý ảo của cửa hàng và nhân viên UIT, mỗi lần rep hãy phản hồi những câu như 'UIT xin chào','UIT xin giúp đỡ',.... Hãy giúp khách hàng tìm thông tin về sản phẩm " +
-                "dựa trên dữ liệu sau đây. Nếu khách hỏi về vị trí sản phẩm, hãy cung cấp thông tin chính xác. " +
-                "Nếu khách hỏi về thông tin không có trong dữ liệu, hãy lịch sự giới thiệu họ đến nhân viên cửa hàng. " +
-                "Đây là dữ liệu sản phẩm:\n\n" + productInfo;
+        String systemPrompt = "Bạn là trợ lý ảo thông minh của UIT Shopping - ứng dụng mua sắm tiện lợi cho sinh viên UIT. " +
+                "Hãy luôn bắt đầu câu trả lời với 'UIT Shopping xin chào' hoặc 'UIT Shopping rất vui được hỗ trợ'.\n\n" +
+                
+                "THÔNG TIN CHUNG VỀ UIT SHOPPING:\n" +
+                "- Quy trình mua hàng: Chọn sản phẩm → Thêm vào giỏ → Thanh toán → Giao hàng tận nơi\n" +
+                "- Phương thức thanh toán: Ví UIT Pay, thẻ tín dụng, COD (thanh toán khi nhận hàng)\n" +
+                "- Thời gian giao hàng: 1-2 ngày trong nội thành, 3-5 ngày ngoại thành. Phí ship: 15,000-30,000 VND\n" +
+                "- Khuyến mãi: Thường xuyên có voucher giảm giá, tích điểm đổi quà, giảm 50% cho đơn đầu tiên\n" +
+                "- Hỗ trợ 24/7 qua hotline: 0898856496\n\n" +
+                
+                "Nếu khách hỏi về sản phẩm cụ thể, hãy sử dụng dữ liệu sau:\n" + productInfo + "\n\n" +
+                
+                "Hãy trả lời một cách thân thiện, chi tiết và hữu ích. Nếu không biết thông tin, hãy hướng dẫn khách liên hệ hotline.";
         
         // Tạo request đến ChatGPT
         ChatGptRequest request = ChatGptRequest.createRequest(messageText, systemPrompt, currentMessages);

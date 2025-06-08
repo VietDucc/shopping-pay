@@ -23,3 +23,6 @@ wrapper/
 .tmp/
 jdks/
 android.lock
+
+# API Keys và secrets
+gradle.properties

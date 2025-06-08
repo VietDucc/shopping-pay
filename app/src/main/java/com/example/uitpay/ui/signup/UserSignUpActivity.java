@@ -1,12 +1,15 @@
 package com.example.uitpay.ui.signup;
 
 
+import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
@@ -32,6 +35,7 @@ public class UserSignUpActivity extends AppCompatActivity {
 
     private TextView textView;
     private Button button;
+    private ImageButton backButton;
     private FirebaseAuth auth;
     private FirebaseFirestore db;
     private ProgressDialog progressDialog;
@@ -50,14 +54,24 @@ public class UserSignUpActivity extends AppCompatActivity {
         passwordTextView = findViewById(R.id.password_edit_text);
         button = findViewById(R.id.signup_button);
         textView = findViewById(R.id.already_have_account_text);
+        backButton = findViewById(R.id.back_button);
         // Initialize ProgressDialog
         progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Registering...");
+
+        // Thêm hiệu ứng lightsweep cho button signup
+        addLightSweepAnimation(button);
 
         button.setOnClickListener(v -> registerNewUser());
         textView.setOnClickListener(v ->{
             Intent intent = new Intent(UserSignUpActivity.this, LoginActivity.class);
             startActivity(intent);
+        });
+        backButton.setOnClickListener(v -> {
+            Intent intent = new Intent(UserSignUpActivity.this, Start.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -109,6 +123,27 @@ public class UserSignUpActivity extends AppCompatActivity {
                             Toast.makeText(UserSignUpActivity.this, "Registration failed! Please try again later", Toast.LENGTH_LONG).show();
                         }
                     }
-                });
+                                    });
+    }
+
+    private void addLightSweepAnimation(Button button) {
+        // Tạo hiệu ứng alpha animation cho lightsweep
+        ObjectAnimator alphaAnimator = ObjectAnimator.ofFloat(button, "alpha", 0.7f, 1.0f, 0.7f);
+        alphaAnimator.setDuration(2000);
+        alphaAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        alphaAnimator.setRepeatMode(ValueAnimator.REVERSE);
+        alphaAnimator.start();
+
+        // Tạo hiệu ứng scale nhẹ
+        ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(button, "scaleX", 1.0f, 1.02f, 1.0f);
+        ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(button, "scaleY", 1.0f, 1.02f, 1.0f);
+        scaleXAnimator.setDuration(2000);
+        scaleYAnimator.setDuration(2000);
+        scaleXAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        scaleYAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        scaleXAnimator.setRepeatMode(ValueAnimator.REVERSE);
+        scaleYAnimator.setRepeatMode(ValueAnimator.REVERSE);
+        scaleXAnimator.start();
+        scaleYAnimator.start();
     }
 }

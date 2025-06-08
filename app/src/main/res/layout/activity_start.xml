@@ -8,19 +8,7 @@
     android:padding="24dp"
     tools:context=".ui.start.Start">
 
-    <!-- Background shape -->
-    <View
-        android:id="@+id/background_shape"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="-150dp"
-        android:background="@drawable/bg_top_rounded"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0" />
+
 
     <!-- Logo with card elevation -->
     <androidx.cardview.widget.CardView
@@ -41,7 +29,7 @@
             android:contentDescription="@string/app_logo"
             android:padding="4dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/logo_placeholder" />
+            android:src="@drawable/logo_uit" />
     </androidx.cardview.widget.CardView>
 
     <!-- Welcome text with improved typography -->
@@ -53,7 +41,7 @@
         android:fontFamily="sans-serif-medium"
         android:text="@string/welcome_text"
         android:textAlignment="center"
-        android:textColor="@color/text_primary"
+        android:textColor="@color/black"
         android:textSize="28sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -74,79 +62,51 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcome_text" />
 
-    <!-- Buttons container with card background -->
-    <androidx.cardview.widget.CardView
-        android:id="@+id/buttons_card"
+    <!-- Login button with gradient -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/login_start_button"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:layout_marginTop="48dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardCornerRadius="16dp"
-        app:cardElevation="4dp"
+        android:background="@drawable/button_gradient_primary"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/login"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:backgroundTint="@null"
+        app:cornerRadius="30dp"
+        app:elevation="4dp"
+        app:icon="@drawable/ic_login"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/to_crm_text">
+        app:layout_constraintTop_toBottomOf="@+id/to_crm_text" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
-
-            <!-- Login button with gradient -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/login_start_button"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:backgroundTint="@color/colorPrimary"
-                android:fontFamily="sans-serif-medium"
-                android:text="@string/login"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                app:cornerRadius="30dp"
-                app:elevation="4dp"
-                app:icon="@drawable/ic_login"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"
-                app:iconTint="@color/white" />
-
-            <!-- Sign up for User button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/signup_user_button"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/colorSecondary"
-                android:fontFamily="sans-serif-medium"
-                android:text="Sign up for User"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                app:cornerRadius="30dp"
-                app:elevation="4dp"
-                app:icon="@drawable/ic_person_add"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"
-                app:iconTint="@color/white" />
-
-            <!-- Sign up for Business button -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/signup_business_button"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:layout_marginTop="16dp"
-                android:backgroundTint="@color/colorTertiary"
-                android:fontFamily="sans-serif-medium"
-                android:text="Sign up for Business"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                app:cornerRadius="30dp"
-                app:elevation="4dp"
-                app:icon="@drawable/ic_business"
-                app:iconGravity="textStart"
-                app:iconPadding="8dp"
-                app:iconTint="@color/white" />
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+    <!-- Sign up for User button -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/signup_user_button"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/button_gradient_secondary"
+        android:fontFamily="sans-serif-medium"
+        android:text="Sign up for User"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:backgroundTint="@null"
+        app:cornerRadius="30dp"
+        app:elevation="4dp"
+        app:icon="@drawable/ic_person_add"
+        app:iconGravity="textStart"
+        app:iconPadding="8dp"
+        app:iconTint="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_start_button" />
 
     <!-- Footer text -->
     <TextView
@@ -154,12 +114,18 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:fontFamily="sans-serif"
-        android:text="Experience the future of business management"
+        android:fontFamily="sans-serif-medium"
+        android:text="@string/footer_text"
         android:textAlignment="center"
-        android:textColor="@color/text_secondary"
-        android:textSize="14sp"
+        android:textColor="#4A90E2"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:shadowColor="#66000000"
+        android:shadowDx="2"
+        android:shadowDy="2"
+        android:shadowRadius="4"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signup_user_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

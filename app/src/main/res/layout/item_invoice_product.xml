@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:padding="8dp"
+    android:background="@drawable/product_item_background">
+
+    <!-- Product image -->
+    <androidx.cardview.widget.CardView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="2dp"
+        android:layout_marginEnd="8dp">
+
+        <ImageView
+            android:id="@+id/productImageView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"
+            android:background="#F0F0F0" />
+
+    </androidx.cardview.widget.CardView>
+
+    <!-- Product name -->
+    <TextView
+        android:id="@+id/productNameText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Laptop Macbook"
+        android:textSize="14sp"
+        android:textColor="#34495E"
+        android:fontFamily="sans-serif" />
+
+    <!-- Product quantity -->
+    <TextView
+        android:id="@+id/productQuantityText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="x3"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#7F8C8D"
+        android:background="@drawable/quantity_background"
+        android:paddingHorizontal="8dp"
+        android:paddingVertical="2dp" />
+
+    <!-- Product price -->
+    <TextView
+        android:id="@+id/productPriceText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="10,000 VND"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:textColor="#27AE60" />
+
+</LinearLayout> 

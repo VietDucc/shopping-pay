@@ -125,31 +125,47 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
     private void showProductDetail(Product product) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         View dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_product_detail, null);
+        builder.setView(dialogView);
 
+        // Tìm các view trong layout mới
         ImageView productImage = dialogView.findViewById(R.id.detail_product_image);
         TextView nameText = dialogView.findViewById(R.id.detail_product_name);
         TextView priceText = dialogView.findViewById(R.id.detail_product_price);
         TextView originText = dialogView.findViewById(R.id.detail_product_origin);
         TextView descriptionText = dialogView.findViewById(R.id.detail_product_description);
+        ImageView closeButton = dialogView.findViewById(R.id.close_button);
 
-        // Load ảnh sản phẩm
+        // Load ảnh sản phẩm tràn đầy popup
         if (product.getProductImage() != null) {
             Glide.with(context)
                 .load(product.getProductImage())
+                .centerCrop()
                 .into(productImage);
         }
 
-        // Set các thông tin khác
-        nameText.setText("Tên sản phẩm: " + (product.getName() != null ? product.getName() : ""));
-        priceText.setText(String.format("Giá: %,.0f VND", product.getPrice()));
-        originText.setText("Xuất xứ: " + (product.getOrigin() != null ? product.getOrigin() : ""));
-        descriptionText.setText("Mô tả: " + (product.getDescription() != null ? product.getDescription() : ""));
-
-        builder.setView(dialogView)
-               .setNegativeButton("Thoát", (dialog, id) -> dialog.dismiss());
+        // Set các thông tin với định dạng mới
+        nameText.setText(product.getName() != null ? product.getName() : "");
+        priceText.setText(String.format("%,.0f VND", product.getPrice()));
+        originText.setText("Xuất xứ: " + (product.getOrigin() != null ? product.getOrigin() : "Việt Nam"));
+        descriptionText.setText("Mô tả: " + (product.getDescription() != null ? product.getDescription() : "Sản phẩm chất lượng cao"));
 
         AlertDialog dialog = builder.create();
+        
+        // Xử lý nút đóng
+        if (closeButton != null) {
+            closeButton.setOnClickListener(v -> dialog.dismiss());
+        }
+        
+        // Hiển thị dialog với kích thước lớn và background trong suốt
         dialog.show();
+        
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            dialog.getWindow().setLayout(
+                (int) (context.getResources().getDisplayMetrics().widthPixels * 0.96), 
+                (int) (context.getResources().getDisplayMetrics().heightPixels * 0.93)
+            );
+        }
     }
 
     static class ProductViewHolder extends RecyclerView.ViewHolder {

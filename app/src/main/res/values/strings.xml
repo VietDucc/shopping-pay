@@ -3,9 +3,10 @@
     <string name="title_home">Trang chủ</string>
     <string name="title_dashboard">Mua hàng</string>
     <string name="title_notifications">Chatbot</string>
+    <string name="title_profile">Cá nhân</string>
 <!--    login-->
     <string name="welcome_text">Welcome!</string>
-    <string name="to_crm_text">to <font color="#FF6347">Shopping Pay</font></string>
+    <string name="to_crm_text">to <font color="#4A90E2">UIT Shopping</font></string>
     <string name="email">Email</string>
     <string name="password">Password</string>
     <string name="login">Login</string>
@@ -17,4 +18,16 @@
     <string name="sign_up_user_title">Sign up for User</string>
     <string name="sign_up_user">Sign Up</string>
     <string name="already_have_user_account">I have user account</string>
+<!-- shopping cart-->
+    <string name="title_cart">Giỏ hàng</string>
+    <string name="title_add_item">Thêm sản phẩm</string>
+    <string name="title_empty">Chưa có sản phẩm</string>
+    <string name="title_checkout">Đặt hàng</string>
+    <string name="title_total_label">Tổng tiền</string>
+    <string name="title_total_cost">0đ</string>
+    <string name="footer_text">Trải nghiệm mua sắm tiện lợi tại UIT Shopping</string>
+    <string name="back_button">Quay lại</string>
+    <string name="close_article">Đóng bài viết</string>
+    <string name="share_article">Chia sẻ</string>
+    <string name="favorite_article">Yêu thích</string>
 </resources>

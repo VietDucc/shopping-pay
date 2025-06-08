@@ -1,5 +1,6 @@
 package com.example.uitpay.ui.notifications;
 
+import com.example.uitpay.BuildConfig;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -18,9 +19,8 @@ public class OpenAIClient {
     private final OpenAIService openAIService;
     
     private static String getApiKey() {
-        // TODO: Lấy API key từ BuildConfig hoặc SharedPreferences
-        // Hiện tại trả về placeholder để tránh lỗi bảo mật
-        return "your-openai-api-key-here";
+        // API key được lấy từ BuildConfig (từ gradle.properties)
+        return BuildConfig.OPENAI_API_KEY;
     }
     
     private OpenAIClient() {

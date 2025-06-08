@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide;
 import com.example.uitpay.R;
 import com.example.uitpay.adapter.PostAdapter;
 import com.example.uitpay.adapter.BannerAdapter;
+import com.example.uitpay.adapter.ShopAdapter;
 import com.example.uitpay.databinding.FragmentHomeBinding;
 import com.example.uitpay.model.Post;
 import android.util.Log;
@@ -29,6 +30,7 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostClickLis
     private HomeViewModel homeViewModel;
     private PostAdapter postAdapter;
     private BannerAdapter bannerAdapter;
+    private ShopAdapter shopAdapter;
     private Handler sliderHandler = new Handler();
     private Runnable sliderRunnable = new Runnable() {
         @Override
@@ -169,6 +171,29 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostClickLis
                 Log.e(TAG, "Error initializing posts ViewPager: ", e);
             }
 
+            // Khởi tạo RecyclerView cho cửa hàng
+            try {
+                RecyclerView recyclerViewStores = binding.recyclerViewStores;
+                shopAdapter = new ShopAdapter();
+                recyclerViewStores.setLayoutManager(new LinearLayoutManager(getContext()));
+                recyclerViewStores.setAdapter(shopAdapter);
+                Log.d(TAG, "onCreateView: Shops RecyclerView initialized");
+
+                // Observe cửa hàng
+                homeViewModel.getShops().observe(getViewLifecycleOwner(), shops -> {
+                    try {
+                        if (shops != null) {
+                            Log.d(TAG, "Updating shops in adapter: " + shops.size() + " items");
+                            shopAdapter.setShops(shops);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error updating shops: ", e);
+                    }
+                });
+            } catch (Exception e) {
+                Log.e(TAG, "Error initializing shops RecyclerView: ", e);
+            }
+
             Log.d(TAG, "onCreateView: Fragment creation completed successfully");
             return root;
             
@@ -222,19 +247,25 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostClickLis
     public void onPostClick(Post post) {
         try {
             Log.d(TAG, "Post clicked: " + post.getTitle());
+            
+            // Tạo dialog bình thường với style hiện đại
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
             View dialogView = getLayoutInflater().inflate(R.layout.dialog_post_detail, null);
             builder.setView(dialogView);
 
+            // Tìm các view trong layout
             TextView titleTextView = dialogView.findViewById(R.id.textView_detail_title);
             ImageView imageView = dialogView.findViewById(R.id.imageView_detail_post);
             TextView dateTextView = dialogView.findViewById(R.id.textView_date);
             TextView contentTextView = dialogView.findViewById(R.id.textView_content);
+            ImageView closeButton = dialogView.findViewById(R.id.close_button);
 
+            // Set dữ liệu
             titleTextView.setText(post.getTitle());
             dateTextView.setText(post.getDate());
             contentTextView.setText(post.getContent());
 
+            // Load hình ảnh
             if (post.getImageUrl() != null && !post.getImageUrl().isEmpty()) {
                 Glide.with(requireContext())
                     .load(post.getImageUrl())
@@ -243,7 +274,22 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostClickLis
             }
 
             AlertDialog dialog = builder.create();
+            
+            // Xử lý nút đóng
+            closeButton.setOnClickListener(v -> dialog.dismiss());
+            
+            // Hiển thị dialog với kích thước lớn nhưng không fullscreen
             dialog.show();
+            
+            // Tùy chỉnh window để dialog lớn hơn và có background trong suốt để hiển thị bo góc
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+                dialog.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.96), 
+                    (int) (getResources().getDisplayMetrics().heightPixels * 0.93)
+                );
+            }
+            
         } catch (Exception e) {
             Log.e(TAG, "Error showing post detail dialog: ", e);
         }
