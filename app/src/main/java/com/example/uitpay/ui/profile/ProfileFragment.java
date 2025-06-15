@@ -129,16 +129,15 @@ public class ProfileFragment extends Fragment {
             startActivity(intent);
         });
         
-        // Call center card
+        // Call center card - gọi tổng đài
         binding.callCenterCard.setOnClickListener(v -> {
-            // TODO: Make a call or show call options
-            Toast.makeText(requireContext(), "Tính năng gọi tổng đài sẽ được cập nhật", Toast.LENGTH_SHORT).show();
+            showCallCenterDialog();
         });
         
-        // Terms card
+        // Terms card - điều khoản dịch vụ
         binding.termsCard.setOnClickListener(v -> {
-            // TODO: Navigate to terms screen
-            Toast.makeText(requireContext(), "Tính năng điều khoản sẽ được cập nhật", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(requireContext(), TermsActivity.class);
+            startActivity(intent);
         });
         
         // Logout button
@@ -199,6 +198,28 @@ public class ProfileFragment extends Fragment {
         });
 
         dialog.show();
+    }
+
+    private void showCallCenterDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("📞 Hỗ trợ khách hàng")
+               .setMessage("Chọn phương thức liên hệ:")
+               .setPositiveButton("Gọi ngay", (dialog, which) -> {
+                   // Mở ứng dụng gọi điện với số tổng đài
+                   Intent callIntent = new Intent(Intent.ACTION_DIAL);
+                   callIntent.setData(Uri.parse("tel:1900123456"));
+                   startActivity(callIntent);
+               })
+               .setNeutralButton("Chat với Bot AI", (dialog, which) -> {
+                   // Chuyển sang tab chatbot
+                   if (getActivity() != null) {
+                       Toast.makeText(requireContext(), "Đang chuyển sang chat bot...", Toast.LENGTH_SHORT).show();
+                       // Có thể navigate sang NotificationsFragment (tab chat)
+                       requireActivity().findViewById(R.id.navigation_notifications).performClick();
+                   }
+               })
+               .setNegativeButton("Hủy", null)
+               .show();
     }
 
     private void showLogoutDialog() {

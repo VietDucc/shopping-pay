@@ -93,7 +93,7 @@
         android:layout_marginTop="16dp"
         android:background="@drawable/button_gradient_secondary"
         android:fontFamily="sans-serif-medium"
-        android:text="Sign up for User"
+        android:text="Đăng ký người dùng"
         android:textAllCaps="false"
         android:textColor="@color/white"
         android:textSize="16sp"

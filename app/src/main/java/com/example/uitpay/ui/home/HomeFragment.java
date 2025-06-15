@@ -10,19 +10,19 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.example.uitpay.R;
 import com.example.uitpay.adapter.PostAdapter;
 import com.example.uitpay.adapter.BannerAdapter;
-import com.example.uitpay.adapter.ShopAdapter;
 import com.example.uitpay.databinding.FragmentHomeBinding;
 import com.example.uitpay.model.Post;
+import com.example.uitpay.model.Shop;
 import android.util.Log;
 import android.os.Handler;
 import androidx.viewpager2.widget.ViewPager2;
 import android.widget.PopupMenu;
+import android.content.Intent;
+import android.net.Uri;
 
 public class HomeFragment extends Fragment implements PostAdapter.OnPostClickListener {
     private static final String TAG = "HomeFragment";
@@ -30,7 +30,6 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostClickLis
     private HomeViewModel homeViewModel;
     private PostAdapter postAdapter;
     private BannerAdapter bannerAdapter;
-    private ShopAdapter shopAdapter;
     private Handler sliderHandler = new Handler();
     private Runnable sliderRunnable = new Runnable() {
         @Override
@@ -171,27 +170,46 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostClickLis
                 Log.e(TAG, "Error initializing posts ViewPager: ", e);
             }
 
-            // Khởi tạo RecyclerView cho cửa hàng
+            // Khởi tạo cửa hàng với layout riêng biệt
             try {
-                RecyclerView recyclerViewStores = binding.recyclerViewStores;
-                shopAdapter = new ShopAdapter();
-                recyclerViewStores.setLayoutManager(new LinearLayoutManager(getContext()));
-                recyclerViewStores.setAdapter(shopAdapter);
-                Log.d(TAG, "onCreateView: Shops RecyclerView initialized");
-
-                // Observe cửa hàng
+                // Observe danh sách shops và hiển thị d liệu
                 homeViewModel.getShops().observe(getViewLifecycleOwner(), shops -> {
                     try {
-                        if (shops != null) {
-                            Log.d(TAG, "Updating shops in adapter: " + shops.size() + " items");
-                            shopAdapter.setShops(shops);
+                        if (shops != null && shops.size() > 0) {
+                            Log.d(TAG, "Updating individual shop layouts: " + shops.size() + " shops");
+                            
+                            // Hiển thị shop đầu tiên
+                            if (shops.size() > 0) {
+                                populateShopData(binding.storeUit1.getRoot(), shops.get(0));
+                            }
+                            // Hiển thị shop thứ hai
+                            if (shops.size() > 1) {
+                                populateShopData(binding.storeUit2.getRoot(), shops.get(1));
+                            }
+                            // Hiển thị shop thứ ba
+                            if (shops.size() > 2) {
+                                populateShopData(binding.storeUit3.getRoot(), shops.get(2));
+                            }
+                            
+                            // Ẩn các shop không có data
+                            if (shops.size() < 3) {
+                                binding.storeUit3.getRoot().setVisibility(View.GONE);
+                            }
+                            if (shops.size() < 2) {
+                                binding.storeUit2.getRoot().setVisibility(View.GONE);
+                            }
+                            if (shops.size() < 1) {
+                                binding.storeUit1.getRoot().setVisibility(View.GONE);
+                            }
                         }
                     } catch (Exception e) {
-                        Log.e(TAG, "Error updating shops: ", e);
+                        Log.e(TAG, "Error updating shop layouts: ", e);
                     }
                 });
+                
+                Log.d(TAG, "onCreateView: Individual shop layouts initialized");
             } catch (Exception e) {
-                Log.e(TAG, "Error initializing shops RecyclerView: ", e);
+                Log.e(TAG, "Error initializing shop layouts: ", e);
             }
 
             Log.d(TAG, "onCreateView: Fragment creation completed successfully");
@@ -292,6 +310,102 @@ public class HomeFragment extends Fragment implements PostAdapter.OnPostClickLis
             
         } catch (Exception e) {
             Log.e(TAG, "Error showing post detail dialog: ", e);
+        }
+    }
+
+    private void populateShopData(View shopView, Shop shop) {
+        try {
+            // Tìm các view trong shop layout
+            ImageView imageShop = shopView.findViewById(R.id.imageShop);
+            TextView textShopName = shopView.findViewById(R.id.textShopName);
+            TextView textShopAddress = shopView.findViewById(R.id.textShopAddress);
+            View layoutMapButton = shopView.findViewById(R.id.layoutMapButton);
+
+            // Set dữ liệu
+            if (textShopName != null) {
+                textShopName.setText(shop.getName());
+            }
+            if (textShopAddress != null) {
+                textShopAddress.setText(shop.getAddress());
+            }
+
+            // Load hình ảnh
+            if (imageShop != null && shop.getImageUrl() != null && !shop.getImageUrl().isEmpty()) {
+                Glide.with(requireContext())
+                    .load(shop.getImageUrl())
+                    .centerCrop()
+                    .placeholder(R.drawable.logo_uit) // placeholder nếu không load được
+                    .into(imageShop);
+            }
+
+            // Set click listener cho map button
+            if (layoutMapButton != null) {
+                layoutMapButton.setOnClickListener(v -> {
+                    try {
+                        Log.d(TAG, "Map button clicked for shop: " + shop.getName());
+                        openMap(shop);
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error handling map button click: ", e);
+                    }
+                });
+            }
+
+            Log.d(TAG, "Shop data populated successfully: " + shop.getName());
+        } catch (Exception e) {
+            Log.e(TAG, "Error populating shop data: ", e);
+        }
+    }
+
+    private void openMap(Shop shop) {
+        try {
+            String mapUrl = shop.getMapUrl();
+            
+            if (mapUrl != null && !mapUrl.isEmpty()) {
+                // Nếu có URL map từ database, sử dụng URL đó
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(mapUrl));
+                intent.setPackage("com.google.android.apps.maps"); // Ưu tiên Google Maps
+                
+                // Kiểm tra xem có Google Maps app không
+                if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    // Nếu không có Google Maps app, mở bằng browser
+                    intent.setPackage(null);
+                    startActivity(intent);
+                }
+                
+                Log.d(TAG, "Opened map with URL: " + mapUrl);
+            } else {
+                // Nếu không có URL, tạo Google Maps search query từ tên và địa chỉ
+                String query = shop.getName();
+                if (shop.getAddress() != null && !shop.getAddress().isEmpty()) {
+                    query += " " + shop.getAddress();
+                }
+                
+                // Tạo URI cho Google Maps search
+                String encodedQuery = Uri.encode(query);
+                String geoUri = "geo:0,0?q=" + encodedQuery;
+                
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(geoUri));
+                intent.setPackage("com.google.android.apps.maps");
+                
+                if (intent.resolveActivity(requireActivity().getPackageManager()) != null) {
+                    startActivity(intent);
+                } else {
+                    // Fallback: mở Google Maps web
+                    String webUrl = "https://maps.google.com/?q=" + encodedQuery;
+                    Intent webIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(webUrl));
+                    startActivity(webIntent);
+                }
+                
+                Log.d(TAG, "Opened map with search query: " + query);
+            }
+            
+        } catch (Exception e) {
+            Log.e(TAG, "Error opening map: ", e);
+            // Hiển thị thông báo lỗi cho user nếu cần
         }
     }
 }

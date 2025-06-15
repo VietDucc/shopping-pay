@@ -49,11 +49,13 @@
 
     <!-- User Avatar -->
     <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="4dp"
-        android:src="@drawable/ic_person_profile"
-        android:background="@drawable/user_avatar_background" />
+        android:src="@drawable/user_icon"
+        android:background="@drawable/user_avatar_background"
+        android:padding="2dp"
+        android:scaleType="centerCrop" />
 
 </LinearLayout> 

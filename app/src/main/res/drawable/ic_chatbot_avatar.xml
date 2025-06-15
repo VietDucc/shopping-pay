@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Headset band -->
+    <path
+        android:fillColor="@color/orange_primary"
+        android:pathData="M6,9C6,5.69 8.69,3 12,3C15.31,3 18,5.69 18,9V12C18,12.55 17.55,13 17,13C16.45,13 16,12.55 16,12V9C16,6.79 14.21,5 12,5C9.79,5 8,6.79 8,9V12C8,12.55 7.55,13 7,13C6.45,13 6,12.55 6,12V9Z" />
+
+    <!-- Left headphone -->
+    <path
+        android:fillColor="@color/orange_primary"
+        android:pathData="M4,10V14C4,15.66 5.34,17 7,17C7.55,17 8,16.55 8,16V12C8,11.45 7.55,11 7,11C5.34,11 4,12.34 4,14Z" />
+
+    <!-- Right headphone -->
+    <path
+        android:fillColor="@color/orange_primary"
+        android:pathData="M20,10V14C20,15.66 18.66,17 17,17C16.45,17 16,16.55 16,16V12C16,11.45 16.45,11 17,11C18.66,11 20,12.34 20,14Z" />
+
+    <!-- Robot head/face -->
+    <path
+        android:fillColor="@color/orange_secondary"
+        android:pathData="M12,7C14.76,7 17,9.24 17,12V16C17,18.76 14.76,21 12,21C9.24,21 7,18.76 7,16V12C7,9.24 9.24,7 12,7Z" />
+
+    <!-- Eyes -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M10,11C10,11.55 9.55,12 9,12C8.45,12 8,11.55 8,11C8,10.45 8.45,10 9,10C9.55,10 10,10.45 10,11Z" />
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M16,11C16,11.55 15.55,12 15,12C14.45,12 14,11.55 14,11C14,10.45 14.45,10 15,10C15.55,10 16,10.45 16,11Z" />
+
+    <!-- Smile -->
+    <path
+        android:fillColor="@android:color/white"
+        android:pathData="M9.5,14H14.5C14.5,15.38 13.38,16.5 12,16.5C10.62,16.5 9.5,15.38 9.5,14Z" />
+
+    <!-- Microphone -->
+    <path
+        android:fillColor="@color/orange_primary"
+        android:pathData="M5,15H7V18H5C4.45,18 4,17.55 4,17V16C4,15.45 4.45,15 5,15Z" />
+    
+    <!-- Antenna -->
+    <path
+        android:fillColor="@color/orange_primary"
+        android:pathData="M11.5,2H12.5V4H11.5V2Z" />
+    <path
+        android:fillColor="@color/orange_primary"
+        android:pathData="M12,1C12.55,1 13,1.45 13,2C13,2.55 12.55,3 12,3C11.45,3 11,2.55 11,2C11,1.45 11.45,1 12,1Z" />
+
+</vector> 

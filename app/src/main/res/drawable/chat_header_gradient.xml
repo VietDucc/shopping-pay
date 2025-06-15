@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <!-- Base gradient background -->
+    <item>
+        <shape>
+            <gradient
+                android:startColor="#FF7043"
+                android:centerColor="#FF8A65"
+                android:endColor="#FFAB91"
+                android:angle="135"
+                android:type="linear" />
+        </shape>
+    </item>
+    
+    <!-- Overlay for depth -->
+    <item>
+        <shape>
+            <gradient
+                android:startColor="#40FFFFFF"
+                android:centerColor="#20FFFFFF"
+                android:endColor="#00FFFFFF"
+                android:angle="90"
+                android:type="linear" />
+        </shape>
+    </item>
+    
+    <!-- Lightsweep overlay -->
+    <item>
+        <shape>
+            <gradient
+                android:startColor="#00FFFFFF"
+                android:centerColor="#30FFFFFF"
+                android:endColor="#00FFFFFF"
+                android:angle="45"
+                android:type="linear" />
+        </shape>
+    </item>
+    
+</layer-list> 

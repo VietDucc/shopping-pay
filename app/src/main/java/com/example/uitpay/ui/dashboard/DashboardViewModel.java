@@ -20,6 +20,23 @@ import androidx.annotation.NonNull;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.widget.Toast;
+import android.widget.TextView;
+import androidx.appcompat.app.AlertDialog;
+import android.content.Intent;
+import android.net.Uri;
+import com.example.uitpay.ui.profile.PaymentClient;
+import com.example.uitpay.ui.profile.PaymentRequest;
+import com.example.uitpay.ui.profile.PaymentResponse;
+import com.example.uitpay.ui.profile.PaymentStatusResponse;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import com.google.firebase.firestore.DocumentReference;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 public class DashboardViewModel extends ViewModel {
 
@@ -39,6 +56,12 @@ public class DashboardViewModel extends ViewModel {
     private final MutableLiveData<String> recheckStatusText = new MutableLiveData<>();
     private final MutableLiveData<Boolean> isChecked = new MutableLiveData<>(false);
     private final MutableLiveData<String> paymentInfoText = new MutableLiveData<>();
+    private final MutableLiveData<Integer> paymentCardVisibility = new MutableLiveData<>(View.GONE);
+    private final MutableLiveData<String> currentBalanceText = new MutableLiveData<>();
+    private final MutableLiveData<String> paymentAmountText = new MutableLiveData<>();
+    private final MutableLiveData<String> balanceAfterText = new MutableLiveData<>();
+    private final MutableLiveData<String> currentOrderId = new MutableLiveData<>();
+    private final MutableLiveData<String> paymentUrl = new MutableLiveData<>();
 
     public DashboardViewModel() {
         mText = new MutableLiveData<>();
@@ -347,9 +370,36 @@ public class DashboardViewModel extends ViewModel {
         return paymentInfoText;
     }
 
+    public LiveData<Integer> getPaymentCardVisibility() {
+        return paymentCardVisibility;
+    }
+
+    public LiveData<String> getCurrentBalanceText() {
+        return currentBalanceText;
+    }
+
+    public LiveData<String> getPaymentAmountText() {
+        return paymentAmountText;
+    }
+
+    public LiveData<String> getBalanceAfterText() {
+        return balanceAfterText;
+    }
+
+    public LiveData<String> getCurrentOrderId() {
+        return currentOrderId;
+    }
+
+    public LiveData<String> getPaymentUrl() {
+        return paymentUrl;
+    }
+
     public void showPaymentInfo() {
-        buttonText.setValue("Thanh toán");
+        buttonText.setValue(""); // Ẩn button cũ
         muahangImageVisibility.setValue(View.GONE);
+        paymentCardVisibility.setValue(View.VISIBLE);
+        // Ẩn text cũ khi hiển thị card mới
+        mText.setValue("");
         
         FirebaseFirestore.getInstance()
             .collection("user")
@@ -365,6 +415,13 @@ public class DashboardViewModel extends ViewModel {
                             Double totalPrice = task.getResult().getValue(Double.class);
                             if (currentBalance != null && totalPrice != null) {
                                 long remainingBalance = currentBalance - totalPrice.longValue();
+                                
+                                // Update payment card data
+                                currentBalanceText.setValue(String.format("%,d", currentBalance));
+                                paymentAmountText.setValue(String.format("%,d", totalPrice.longValue()));
+                                balanceAfterText.setValue(String.format("%,d VND", remainingBalance));
+                                
+                                // Keep old format for backward compatibility
                                 String paymentInfo = String.format(
                                     "Số dư hiện tại: <font color='#FF0000'>%,d</font> VND<br><br>" +
                                     "Số tiền cần thanh toán: <font color='#FF0000'>%,d</font> VND<br><br>" + 
@@ -379,7 +436,7 @@ public class DashboardViewModel extends ViewModel {
             });
     }
 
-    public void processPayment(Context context, DialogInterface dialog) {
+    public void processUITPayPayment(Context context, Double totalPrice, DialogInterface dialog) {
         FirebaseFirestore.getInstance()
             .collection("user")
             .document("id001")
@@ -388,37 +445,245 @@ public class DashboardViewModel extends ViewModel {
                 if (documentSnapshot.exists()) {
                     Long currentBalance = documentSnapshot.getLong("sotien");
                     
-                    DatabaseReference userRef = databaseRef.child("phampho1103");
-                    userRef.child("totalprice").get().addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Double totalPrice = task.getResult().getValue(Double.class);
-                            if (currentBalance != null && totalPrice != null) {
-                                if (currentBalance >= totalPrice) {
-                                    // Cập nhật số dư mới
-                                    long newBalance = currentBalance - totalPrice.longValue();
-                                    documentSnapshot.getReference().update("sotien", newBalance)
-                                        .addOnSuccessListener(aVoid -> {
-                                            // Cập nhật isPaid thành true
-                                            userRef.child("isPaid").setValue(true)
-                                                .addOnSuccessListener(aVoid2 -> {
-                                                    dialog.dismiss();
-                                                    moveToStage4();
-                                                    Toast.makeText(context, 
-                                                        "Thanh toán thành công!", 
-                                                        Toast.LENGTH_SHORT).show();
-                                                });
+                    if (currentBalance != null && totalPrice != null) {
+                        if (currentBalance >= totalPrice) {
+                            // Cập nhật số dư mới
+                            long newBalance = currentBalance - totalPrice.longValue();
+                            documentSnapshot.getReference().update("sotien", newBalance)
+                                .addOnSuccessListener(aVoid -> {
+                                    // Cập nhật isPaid thành true
+                                    DatabaseReference userRef = databaseRef.child("phampho1103");
+                                    userRef.child("isPaid").setValue(true)
+                                        .addOnSuccessListener(aVoid2 -> {
+                                            dialog.dismiss();
+                                            moveToStage4();
+                                            Toast.makeText(context, 
+                                                "💰 Thanh toán UITPAY thành công!", 
+                                                Toast.LENGTH_SHORT).show();
                                         });
-                                } else {
-                                    Toast.makeText(context, 
-                                        "Bạn không đủ tiền để thanh toán, hãy nạp thêm", 
-                                        Toast.LENGTH_SHORT).show();
-                                    dialog.dismiss();
-                                }
-                            }
+                                });
+                        } else {
+                            Toast.makeText(context, 
+                                "💳 Số dư không đủ để thanh toán!\nVui lòng nạp thêm tiền vào ví.", 
+                                Toast.LENGTH_LONG).show();
+                            dialog.dismiss();
                         }
-                    });
+                    }
                 }
             });
+    }
+
+    public void processVNPayPayment(Context context, Double totalPrice, AlertDialog loadingDialog) {
+        TextView statusText = loadingDialog.findViewById(R.id.loading_status);
+        TextView subText = loadingDialog.findViewById(R.id.loading_sub_text);
+        
+        // Step 1: Create payment order
+        if (statusText != null) {
+            statusText.setText("Đang tạo đơn thanh toán...");
+        }
+        
+        // Create payment request
+        String orderInfo = "Thanh toán đơn hàng UIT Shopping - " + String.format("%,.0f VND", totalPrice);
+        PaymentRequest request = new PaymentRequest(totalPrice.longValue(), orderInfo);
+        
+        // Call API to create payment order
+        PaymentClient.getInstance().getPaymentService().createPaymentOrder(request)
+            .enqueue(new Callback<PaymentResponse>() {
+                @Override
+                public void onResponse(Call<PaymentResponse> call, Response<PaymentResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        PaymentResponse paymentResponse = response.body();
+                        
+                        // Save order info
+                        currentOrderId.setValue(paymentResponse.getOrderId());
+                        paymentUrl.setValue(paymentResponse.getPaymentUrl());
+                        
+                        // Update status
+                        if (statusText != null) {
+                            statusText.setText("Đang chuyển hướng đến VNPAY...");
+                        }
+                        if (subText != null) {
+                            subText.setText("Sẽ mở trình duyệt trong giây lát");
+                        }
+                        
+                        // Step 2: Open browser after short delay
+                        new android.os.Handler().postDelayed(() -> {
+                            loadingDialog.dismiss();
+                            openPaymentUrl(context, paymentResponse.getPaymentUrl());
+                        }, 1500);
+                        
+                    } else {
+                        loadingDialog.dismiss();
+                        Toast.makeText(context, 
+                            "❌ Lỗi tạo đơn thanh toán: " + response.code(), 
+                            Toast.LENGTH_LONG).show();
+                    }
+                }
+                
+                @Override
+                public void onFailure(Call<PaymentResponse> call, Throwable t) {
+                    loadingDialog.dismiss();
+                    Toast.makeText(context, 
+                        "❌ Lỗi kết nối: " + t.getMessage(), 
+                        Toast.LENGTH_LONG).show();
+                }
+            });
+    }
+    
+    private void openPaymentUrl(Context context, String paymentUrl) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(paymentUrl));
+            context.startActivity(intent);
+            
+            Toast.makeText(context, 
+                "🌐 Đã mở trình duyệt thanh toán VNPAY", 
+                Toast.LENGTH_SHORT).show();
+                
+        } catch (Exception e) {
+            Toast.makeText(context, 
+                "❌ Không thể mở trang thanh toán", 
+                Toast.LENGTH_LONG).show();
+        }
+    }
+    
+    private void showVNPayResultDialog(Context context, Double totalPrice, boolean success) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        
+        if (success) {
+            builder.setTitle("🎉 Thanh toán thành công!")
+                    .setMessage(String.format("Đã thanh toán %,.0f VND qua VNPAY", totalPrice))
+                    .setPositiveButton("Hoàn tất", (dialog, id) -> {
+                        // Update payment status
+                        DatabaseReference userRef = databaseRef.child("phampho1103");
+                        userRef.child("isPaid").setValue(true)
+                            .addOnSuccessListener(aVoid -> {
+                                dialog.dismiss();
+                                moveToStage4();
+                                Toast.makeText(context, 
+                                    "💳 Thanh toán VNPAY thành công!", 
+                                    Toast.LENGTH_SHORT).show();
+                            });
+                    });
+        } else {
+            builder.setTitle("❌ Thanh toán thất bại")
+                    .setMessage("Có lỗi xảy ra trong quá trình thanh toán qua VNPAY")
+                    .setPositiveButton("Thử lại", (dialog, id) -> {
+                        dialog.dismiss();
+                    });
+        }
+        
+        builder.setCancelable(false);
+        builder.create().show();
+    }
+    
+    public void checkVNPayPaymentStatus(Context context) {
+        String orderId = currentOrderId.getValue();
+        if (orderId == null || orderId.isEmpty()) {
+            return;
+        }
+        
+        Toast.makeText(context, "Đang kiểm tra trạng thái thanh toán...", Toast.LENGTH_SHORT).show();
+        
+        PaymentClient.getInstance().getPaymentService().getPaymentStatus(orderId)
+            .enqueue(new Callback<PaymentStatusResponse>() {
+                @Override
+                public void onResponse(Call<PaymentStatusResponse> call, Response<PaymentStatusResponse> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        PaymentStatusResponse statusResponse = response.body();
+                        
+                        if (statusResponse.isPaid()) {
+                            // Payment successful - create invoice and update status
+                            createInvoiceAndComplete(context, statusResponse.getAmount());
+                        } else {
+                            Toast.makeText(context, 
+                                "💳 Thanh toán chưa hoàn tất", 
+                                Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(context, 
+                            "❌ Lỗi kiểm tra thanh toán: " + response.code(), 
+                            Toast.LENGTH_SHORT).show();
+                    }
+                }
+                
+                @Override
+                public void onFailure(Call<PaymentStatusResponse> call, Throwable t) {
+                    Toast.makeText(context, 
+                        "❌ Lỗi kết nối kiểm tra thanh toán", 
+                        Toast.LENGTH_SHORT).show();
+                }
+            });
+    }
+
+    private void createInvoiceAndComplete(Context context, long totalAmount) {
+        // Clear payment tracking
+        currentOrderId.setValue(null);
+        paymentUrl.setValue(null);
+        
+        // Get total price and products from Firebase Realtime Database
+        DatabaseReference userRef = databaseRef.child("phampho1103");
+        userRef.child("totalprice").get().addOnCompleteListener(priceTask -> {
+            if (priceTask.isSuccessful()) {
+                Double actualTotalPrice = priceTask.getResult().getValue(Double.class);
+                
+                // Get products
+                DatabaseReference productsRef = databaseRef.child("phampho1103").child("products");
+                productsRef.get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && task.getResult() != null) {
+                        DataSnapshot snapshot = task.getResult();
+                        
+                        // Create invoice data
+                        Map<String, Object> invoice = new HashMap<>();
+                        String invoiceId = "INV" + System.currentTimeMillis();
+                        String currentDate = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(new Date());
+                        
+                        invoice.put("invoiceID", invoiceId);
+                        // Use actual total price from shopping cart, not payment amount
+                        invoice.put("cost", actualTotalPrice != null ? actualTotalPrice.doubleValue() : totalAmount);
+                        invoice.put("date", currentDate);
+                        invoice.put("description", "Thanh toán đơn hàng qua VNPAY");
+                        invoice.put("userid", "id001");
+                
+                        // Convert products to invoice format
+                        Map<String, Object> products = new HashMap<>();
+                        for (DataSnapshot productSnapshot : snapshot.getChildren()) {
+                            String productId = productSnapshot.child("productId").getValue(String.class);
+                            if (productId != null) {
+                                Map<String, Object> productData = new HashMap<>();
+                                productData.put("name", productSnapshot.child("name").getValue(String.class));
+                                productData.put("price", productSnapshot.child("price").getValue(Double.class));
+                                productData.put("quantity", productSnapshot.child("quantity").getValue(Integer.class));
+                                products.put(productId, productData);
+                            }
+                        }
+                        invoice.put("product", products);
+                        
+                        // Save invoice to Firestore
+                        FirebaseFirestore.getInstance()
+                            .collection("invoice")
+                            .document(invoiceId)
+                            .set(invoice)
+                            .addOnSuccessListener(aVoid -> {
+                                // Update payment status
+                                databaseRef.child("phampho1103").child("isPaid").setValue(true)
+                                    .addOnSuccessListener(aVoid2 -> {
+                                        Toast.makeText(context, 
+                                            "🎉 Thanh toán VNPAY thành công!\n📄 Hóa đơn đã được lưu.", 
+                                            Toast.LENGTH_LONG).show();
+                                        moveToStage4();
+                                    });
+                            })
+                            .addOnFailureListener(e -> {
+                                Toast.makeText(context, 
+                                    "⚠️ Thanh toán thành công nhưng lỗi lưu hóa đơn", 
+                                    Toast.LENGTH_LONG).show();
+                                moveToStage4();
+                            });
+                    }
+                });
+            }
+        });
     }
 
     public DatabaseReference getDatabaseRef() {
@@ -433,6 +698,7 @@ public class DashboardViewModel extends ViewModel {
         muahangImageResource.setValue(R.drawable.muahang5);
         muahangImageVisibility.setValue(View.VISIBLE);
         summaryLayoutVisibility.setValue(View.GONE);
+        paymentCardVisibility.setValue(View.GONE);
     }
 
     public void resetDashboard() {

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- Head circle -->
+    <path
+        android:fillColor="@color/orange_primary"
+        android:pathData="M12,2C14.76,2 17,4.24 17,7C17,9.76 14.76,12 12,12C9.24,12 7,9.76 7,7C7,4.24 9.24,2 12,2Z"
+        android:strokeWidth="1.5"
+        android:strokeColor="@color/orange_secondary" />
+
+    <!-- Body/shoulders -->
+    <path
+        android:fillColor="@color/orange_primary"
+        android:pathData="M12,14C7.58,14 4,17.58 4,22H20C20,17.58 16.42,14 12,14Z"
+        android:strokeWidth="1.5"
+        android:strokeColor="@color/orange_secondary" />
+
+    <!-- Inner highlight for depth -->
+    <path
+        android:fillColor="@color/orange_secondary"
+        android:pathData="M12,3C13.66,3 15,4.34 15,6C15,7.66 13.66,9 12,9C10.34,9 9,7.66 9,6C9,4.34 10.34,3 12,3Z"
+        android:fillAlpha="0.3" />
+
+</vector> 

@@ -6,12 +6,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ScrollView;
 import androidx.cardview.widget.CardView;
+import android.os.Handler;
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -93,6 +96,18 @@ public class NotificationsFragment extends Fragment {
             return false;
         });
         
+        // Thêm animation cho online status
+        View onlineStatusDot = root.findViewById(R.id.onlineStatusDot);
+        if (onlineStatusDot != null) {
+            onlineStatusDot.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.online_pulse));
+        }
+        
+        // Thêm lightsweep animation cho header
+        View headerLayout = root.findViewById(R.id.headerLayout);
+        if (headerLayout != null) {
+            headerLayout.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.header_lightsweep));
+        }
+        
         // Quan sát dữ liệu từ ViewModel
         viewModel.getMessageList().observe(getViewLifecycleOwner(), this::updateMessages);
         
@@ -100,6 +115,12 @@ public class NotificationsFragment extends Fragment {
         viewModel.getIsLoading().observe(getViewLifecycleOwner(), isLoading -> {
             if (progressBar != null) {
                 progressBar.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+                if (isLoading) {
+                    // Thêm animation xoay cho progress bar
+                    progressBar.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.typing_animation));
+                } else {
+                    progressBar.clearAnimation();
+                }
             }
             buttonSend.setEnabled(!isLoading);
         });
@@ -109,19 +130,19 @@ public class NotificationsFragment extends Fragment {
     
     private void setupSuggestedQuestions() {
         question1.setOnClickListener(v -> {
-            sendMessageFromSuggestion("Quy trình mua hàng như thế nào?");
+            sendMessageFromSuggestion("Quy trình mua hàng bằng NFC như thế nào?");
         });
         
         question2.setOnClickListener(v -> {
-            sendMessageFromSuggestion("Có những phương thức thanh toán nào?");
+            sendMessageFromSuggestion("Có những phương thức thanh toán nào? VNPAY và UITPAY khác nhau gì?");
         });
         
         question3.setOnClickListener(v -> {
-            sendMessageFromSuggestion("Thời gian giao hàng và chi phí?");
+            sendMessageFromSuggestion("Bước Recheck thủ công là gì? Tại sao cần kiểm tra lại giỏ hàng?");
         });
         
         question4.setOnClickListener(v -> {
-            sendMessageFromSuggestion("Có chương trình khuyến mãi nào không?");
+            sendMessageFromSuggestion("UIT Shopping có những chương trình khuyến mãi nào? Tương lai sẽ phát triển như thế nào?");
         });
     }
     
@@ -154,6 +175,16 @@ public class NotificationsFragment extends Fragment {
         // Cuộn xuống tin nhắn mới nhất
         if (messages.size() > 0) {
             recyclerView.smoothScrollToPosition(messages.size() - 1);
+            
+            // Thêm animation fade in cho tin nhắn mới
+            new Handler(Looper.getMainLooper()).postDelayed(() -> {
+                if (recyclerView != null && recyclerView.getChildCount() > 0) {
+                    View lastMessage = recyclerView.getChildAt(recyclerView.getChildCount() - 1);
+                    if (lastMessage != null) {
+                        lastMessage.startAnimation(AnimationUtils.loadAnimation(getContext(), R.anim.chat_fade_in));
+                    }
+                }
+            }, 100);
         }
     }
 

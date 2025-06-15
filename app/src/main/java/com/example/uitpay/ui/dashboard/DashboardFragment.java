@@ -78,7 +78,15 @@ public class DashboardFragment extends Fragment {
 
         // Observe tất cả các LiveData
         dashboardViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-        dashboardViewModel.getButtonText().observe(getViewLifecycleOwner(), testButton::setText);
+        dashboardViewModel.getButtonText().observe(getViewLifecycleOwner(), text -> {
+            testButton.setText(text);
+            // Ẩn button nếu text rỗng
+            if (text == null || text.isEmpty()) {
+                testButton.setVisibility(View.GONE);
+            } else {
+                testButton.setVisibility(View.VISIBLE);
+            }
+        });
         dashboardViewModel.getStageImageResource().observe(getViewLifecycleOwner(),
                 resource -> stageImage.setImageResource(resource));
         dashboardViewModel.getMuahangImageResource().observe(getViewLifecycleOwner(),
@@ -101,13 +109,85 @@ public class DashboardFragment extends Fragment {
 
         dashboardViewModel.getPaymentInfoText().observe(getViewLifecycleOwner(),
                 text -> {
-                    if (text != null) {
+                    // Không hiển thị text cũ nữa, chỉ dùng payment card
+                    if (text != null && !text.isEmpty()) {
                         binding.textDashboard.setText(Html.fromHtml(text, Html.FROM_HTML_MODE_COMPACT));
                         binding.textDashboard.setTextSize(TypedValue.COMPLEX_UNIT_SP, 16);
                         binding.textDashboard.setGravity(Gravity.CENTER);
                         binding.textDashboard.setPadding(16, 32, 16, 32);
                     }
                 });
+
+        // Observe payment card visibility
+        dashboardViewModel.getPaymentCardVisibility().observe(getViewLifecycleOwner(),
+                visibility -> {
+                    if (visibility == View.VISIBLE) {
+                        // Hiển thị payment card
+                        binding.paymentInfoCard.getRoot().setVisibility(visibility);
+                        binding.paymentInfoCard.getRoot().startAnimation(
+                            android.view.animation.AnimationUtils.loadAnimation(getContext(), R.anim.payment_card_enter)
+                        );
+                        
+                        // Ẩn hoàn toàn text dashboard và button cũ
+                        binding.textDashboard.setVisibility(View.GONE);
+                        binding.testButton.setVisibility(View.GONE);
+                    } else {
+                        binding.paymentInfoCard.getRoot().setVisibility(visibility);
+                        // Hiển thị lại text dashboard và button khi ẩn payment card
+                        binding.textDashboard.setVisibility(View.VISIBLE);
+                        binding.testButton.setVisibility(View.VISIBLE);
+                    }
+                });
+
+        // Observe payment card data
+        dashboardViewModel.getCurrentBalanceText().observe(getViewLifecycleOwner(), balance -> {
+            if (balance != null) {
+                TextView currentBalanceText = binding.paymentInfoCard.getRoot().findViewById(R.id.current_balance_text);
+                if (currentBalanceText != null) {
+                    currentBalanceText.setText(balance);
+                }
+            }
+        });
+
+        dashboardViewModel.getPaymentAmountText().observe(getViewLifecycleOwner(), amount -> {
+            if (amount != null) {
+                TextView paymentAmountText = binding.paymentInfoCard.getRoot().findViewById(R.id.payment_amount_text);
+                if (paymentAmountText != null) {
+                    paymentAmountText.setText(amount);
+                }
+            }
+        });
+
+        dashboardViewModel.getBalanceAfterText().observe(getViewLifecycleOwner(), balance -> {
+            if (balance != null) {
+                TextView balanceAfterText = binding.paymentInfoCard.getRoot().findViewById(R.id.balance_after_text);
+                if (balanceAfterText != null) {
+                    balanceAfterText.setText(balance);
+                }
+            }
+        });
+
+        // Setup payment button click listener
+        View paymentButton = binding.paymentInfoCard.getRoot().findViewById(R.id.payment_button);
+        if (paymentButton != null) {
+            paymentButton.setOnClickListener(v -> {
+                DatabaseReference userRef = dashboardViewModel.getDatabaseRef().child("phampho1103");
+                userRef.child("totalprice").get().addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        Double totalPrice = task.getResult().getValue(Double.class);
+                        if (totalPrice != null) {
+                            showPaymentMethodDialog(totalPrice);
+                        }
+                    }
+                });
+            });
+        }
+
+        // Observe payment URL to open browser
+        dashboardViewModel.getPaymentUrl().observe(getViewLifecycleOwner(), paymentUrl -> {
+            // PaymentUrl will be set when API response comes back
+            // Browser opening is handled in ViewModel
+        });
 
         testButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -256,6 +336,15 @@ public class DashboardFragment extends Fragment {
             nfcAdapter.enableForegroundDispatch(requireActivity(),
                     pendingIntent, intentFiltersArray, techListsArray);
         }
+        
+        // Check VNPay payment status when user returns from browser
+        String orderId = dashboardViewModel.getCurrentOrderId().getValue();
+        if (orderId != null && !orderId.isEmpty()) {
+            // Delay check to allow user to see the app
+            new android.os.Handler().postDelayed(() -> {
+                dashboardViewModel.checkVNPayPaymentStatus(requireContext());
+            }, 1000);
+        }
     }
 
     @Override
@@ -273,7 +362,7 @@ public class DashboardFragment extends Fragment {
         builder.setView(dialogView);
 
         AlertDialog dialog = builder.create();
-        dialog.setTitle("Chọn phương thức thanh toán");
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         // Lấy reference đến các view trong dialog
         View vnpayOption = dialogView.findViewById(R.id.layout_vnpay);
@@ -293,15 +382,53 @@ public class DashboardFragment extends Fragment {
     }
 
     private void showPaymentConfirmDialog(Double totalPrice, String paymentMethod) {
+        if ("UITPAY".equals(paymentMethod)) {
+            // Thanh toán bằng UITPAY - trừ tiền trực tiếp
+            processUITPayPayment(totalPrice);
+        } else if ("VNPAY".equals(paymentMethod)) {
+            // Thanh toán bằng VNPAY - tạo payment order
+            processVNPayPayment(totalPrice);
+        }
+    }
+
+    private void processUITPayPayment(Double totalPrice) {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Xác nhận thanh toán qua " + paymentMethod)
-                .setMessage(String.format("Bạn có xác nhận thanh toán số tiền %,.0f VND?", totalPrice))
+        builder.setTitle("Xác nhận thanh toán qua UITPAY")
+                .setMessage(String.format("Bạn có xác nhận thanh toán số tiền %,.0f VND từ ví UIT Shopping?", totalPrice))
                 .setPositiveButton("Đồng ý", (dialog, id) -> {
-                    dashboardViewModel.processPayment(requireContext(), dialog);
+                    dashboardViewModel.processUITPayPayment(requireContext(), totalPrice, dialog);
                 })
                 .setNegativeButton("Từ chối", (dialog, id) -> {
                     dialog.dismiss();
                 });
         builder.create().show();
+    }
+
+    private void processVNPayPayment(Double totalPrice) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Xác nhận thanh toán qua VNPAY")
+                .setMessage(String.format("Bạn có xác nhận thanh toán số tiền %,.0f VND qua VNPAY?", totalPrice))
+                .setPositiveButton("Đồng ý", (dialog, id) -> {
+                    dialog.dismiss();
+                    showVNPayLoadingDialog(totalPrice);
+                })
+                .setNegativeButton("Từ chối", (dialog, id) -> {
+                    dialog.dismiss();
+                });
+        builder.create().show();
+    }
+
+    private void showVNPayLoadingDialog(Double totalPrice) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        View loadingView = getLayoutInflater().inflate(R.layout.dialog_vnpay_loading, null);
+        builder.setView(loadingView);
+        builder.setCancelable(false);
+
+        AlertDialog loadingDialog = builder.create();
+        loadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        loadingDialog.show();
+
+        // Tạo payment order và xử lý
+        dashboardViewModel.processVNPayPayment(requireContext(), totalPrice, loadingDialog);
     }
 }
